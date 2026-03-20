@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入力フォーム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  </head>
+<body>
+ <div class="container mt-4">
+  <form>
+    <div class="row g-3 align-items-left">
+
+      <div class="col-md-6">
+        <div class="row align-items-center">
+          <label for="inputName" class="col-sm-4 col-form-label text-md-end">氏名</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="inputName" placeholder="例：山田 太郎">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="row align-items-center">
+          <label for="inputKana" class="col-sm-4 col-form-label text-md-end">フリガナ</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="inputKana" placeholder="例：ヤマダ タロウ">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="row align-items-center">
+          <label for="inputPhone" class="col-sm-4 col-form-label text-md-end">電話番号</label>
+          <div class="col-sm-8">
+            <input type="tel" class="form-control" id="inputPhone" placeholder="例：090-XXXX-XXXX">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="row align-items-center">
+          <label for="inputEmail" class="col-sm-4 col-form-label text-md-end">メールアドレス</label>
+          <div class="col-sm-8">
+            <input type="email" class="form-control" id="inputEmail" placeholder="例：mail@example.com">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="row align-items-center">
+          <label for="startDate" class="col-sm-2 col-form-label text-md-end">日付の範囲</label>
+          <div class="col-sm-10">
+            <div class="input-group">
+              <input type="date" class="form-control date-picker" id="startDate" aria-label="開始日">
+              <span class="input-group-text">〜</span>
+              <input type="date" class="form-control date-picker" id="endDate" aria-label="終了日">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button type="submit" class="btn btn-primary px-5">送信する</button>
+      </div>
+
+    </div>
+  </form>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+
+  <script>
+    flatpickr(".date-picker", {
+      locale: "ja",         // カレンダーを日本語化
+      dateFormat: "Y/m/d",  // フォーマットを yyyy/mm/dd に指定
+      allowInput: false,        // 直接入力を禁止
+    });
+  </script></body>
+</html>
