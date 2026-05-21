@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サーバー情報管理</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* 最後の行の下線を消すスタイル */
+        .data-row:last-child {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-light py-5">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h2 class="mb-4">サーバー情報管理</h2>
+
+            <form action="#" method="post" id="serverForm" novalidate>
+                <div class="card shadow-sm border-primary">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-hdd-network me-2"></i>登録リスト</h5>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addRowBtn">
+                            <i class="bi bi-plus-lg"></i> 行を追加
+                        </button>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- ヘッダー行 (PC表示のみ) -->
+                        <div class="row fw-bold text-muted border-bottom pb-2 mb-3 px-2 d-none" id="gridHeader">
+                            <div class="col-md-3">IPアドレス</div>
+                            <div class="col-md-3">ホスト名</div>
+                            <div class="col-md-5">用途</div>
+                            <div class="col-md-1 text-md-center">操作</div>
+                        </div>
+
+                        <!-- データ行コンテナ -->
+                        <div id="dataContainer">
+                            <!-- サンプル行 1 (正常な状態) -->
+                            <div class="row align-items-start data-row border-bottom pb-3 mb-3 px-2">
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">IPアドレス</label>
+                                    <input type="text" class="form-control" name="Servers[0].IP" value="192.168.1.10" placeholder="192.168.0.1">
+                                    <div class="invalid-feedback">正しいIPアドレスを入力してください。</div>
+                                </div>
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">ホスト名</label>
+                                    <input type="text" class="form-control" name="Servers[0].Hostname" value="web-server-01" placeholder="host-name">
+                                    <div class="invalid-feedback">ホスト名を入力してください。</div>
+                                </div>
+                                <div class="col-md-5 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">用途</label>
+                                    <input type="text" class="form-control" name="Servers[0].Purpose" value="本番用Webサーバー" placeholder="用途を入力">
+                                    <div class="invalid-feedback">用途を入力してください。</div>
+                                </div>
+                                <div class="col-md-1 text-md-center mt-2 mt-md-0">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn w-100" title="削除">
+                                        <i class="bi bi-trash3"></i> <span class="d-md-none ms-1">削除</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- サンプル行 2 (バリデーションエラーの表示例) -->
+                            <div class="row align-items-start data-row border-bottom pb-3 mb-3 px-2">
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">IPアドレス</label>
+                                    <!-- is-invalid クラスをつけることで下の invalid-feedback が表示されます -->
+                                    <input type="text" class="form-control is-invalid" name="Servers[1].IP" value="192.168.1.999" placeholder="192.168.0.1">
+                                    <div class="invalid-feedback">無効なIPアドレスの形式です。</div>
+                                </div>
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">ホスト名</label>
+                                    <input type="text" class="form-control is-invalid" name="Servers[1].Hostname" value="" placeholder="host-name">
+                                    <div class="invalid-feedback">ホスト名は必須項目です。</div>
+                                </div>
+                                <div class="col-md-5 mb-3 mb-md-0">
+                                    <label class="form-label d-md-none fw-bold small text-muted">用途</label>
+                                    <input type="text" class="form-control" name="Servers[1].Purpose" value="テスト用" placeholder="用途を入力">
+                                    <div class="invalid-feedback">用途を入力してください。</div>
+                                </div>
+                                <div class="col-md-1 text-md-center mt-2 mt-md-0">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn w-100" title="削除">
+                                        <i class="bi bi-trash3"></i> <span class="d-md-none ms-1">削除</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 0件の時のプレースホルダー -->
+                        <div id="emptyMessage" class="text-center py-5 text-muted d-none" style="background-color: #f8f9fa; border-radius: 0.5rem;">
+                            <i class="bi bi-server display-6 text-secondary mb-3 d-block opacity-50"></i>
+                            登録するサーバー情報がありません。<br>右上の「行を追加」ボタンから追加してください。
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-white text-end py-3">
+                        <button type="button" class="btn btn-secondary me-2">キャンセル</button>
+                        <button type="submit" class="btn btn-primary px-4">保存する</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const addRowBtn = document.getElementById('addRowBtn');
+    const dataContainer = document.getElementById('dataContainer');
+    const emptyMessage = document.getElementById('emptyMessage');
+    const gridHeader = document.getElementById('gridHeader');
+    
+    // サンプル行が既に2行あるため、インデックスは2から開始
+    let rowIndex = 2; 
+
+    // 初期状態の表示制御を実行
+    toggleVisibility();
+
+    // 表示/非表示の制御関数
+    function toggleVisibility() {
+        const hasRows = dataContainer.children.length > 0;
+        if (hasRows) {
+            emptyMessage.classList.add('d-none');
+            gridHeader.classList.remove('d-none');
+            gridHeader.classList.add('d-md-flex', 'd-none');
+        } else {
+            emptyMessage.classList.remove('d-none');
+            gridHeader.classList.remove('d-md-flex');
+            gridHeader.classList.add('d-none');
+        }
+    }
+
+    // 行追加ボタンのイベント
+    addRowBtn.addEventListener('click', function () {
+        const row = document.createElement('div');
+        row.className = 'row align-items-start data-row border-bottom pb-3 mb-3 px-2';
+        row.innerHTML = `
+            <div class="col-md-3 mb-3 mb-md-0">
+                <label class="form-label d-md-none fw-bold small text-muted">IPアドレス</label>
+                <input type="text" class="form-control" name="Servers[${rowIndex}].IP" placeholder="192.168.0.1">
+                <div class="invalid-feedback">正しいIPアドレスを入力してください。</div>
+            </div>
+            <div class="col-md-3 mb-3 mb-md-0">
+                <label class="form-label d-md-none fw-bold small text-muted">ホスト名</label>
+                <input type="text" class="form-control" name="Servers[${rowIndex}].Hostname" placeholder="host-name">
+                <div class="invalid-feedback">ホスト名を入力してください。</div>
+            </div>
+            <div class="col-md-5 mb-3 mb-md-0">
+                <label class="form-label d-md-none fw-bold small text-muted">用途</label>
+                <input type="text" class="form-control" name="Servers[${rowIndex}].Purpose" placeholder="用途を入力">
+                <div class="invalid-feedback">用途を入力してください。</div>
+            </div>
+            <div class="col-md-1 text-md-center mt-2 mt-md-0">
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn w-100" title="削除">
+                    <i class="bi bi-trash3"></i> <span class="d-md-none ms-1">削除</span>
+                </button>
+            </div>
+        `;
+        dataContainer.appendChild(row);
+        rowIndex++;
+        toggleVisibility();
+    });
+
+    // 行削除のイベント（イベントデリゲーション）
+    dataContainer.addEventListener('click', function (e) {
+        const removeBtn = e.target.closest('.remove-btn');
+        if (removeBtn) {
+            const row = removeBtn.closest('.data-row');
+            row.remove();
+            toggleVisibility();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ファイル管理</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* 最後の行のボーダーを消すためのユーティリティ */
+        .file-row:last-child {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-light py-5">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h2 class="mb-4">ファイル管理</h2>
+
+            <form action="#" method="post" enctype="multipart/form-data">
+                
+                <!-- 既存ファイルセクション -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-secondary"><i class="bi bi-folder2-open me-2"></i>既存ファイル</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- ヘッダー行 (PC表示のみ) -->
+                        <div class="row fw-bold text-muted border-bottom pb-2 d-none d-md-flex mb-3 px-2">
+                            <div class="col-md-4">現在のファイル</div>
+                            <div class="col-md-4">補足</div>
+                            <div class="col-md-4">上書き用ファイル</div>
+                        </div>
+
+                        <!-- 既存ファイル 1 -->
+                        <div class="row align-items-center file-row border-bottom pb-3 mb-3 px-2">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">現在のファイル</span>
+                                <a href="#" class="text-decoration-none d-block text-truncate">
+                                    <i class="bi bi-file-earmark-pdf text-danger"></i> requirements_v1.pdf
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">補足</span>
+                                <input type="text" class="form-control" name="ExistingFiles[0].Description" value="要件定義書（初版）">
+                            </div>
+                            <div class="col-md-4">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">上書き用ファイル</span>
+                                <input class="form-control" type="file" name="ExistingFiles[0].ReplacementFile">
+                                <div class="form-text mt-1 text-muted" style="font-size: 0.75rem;">※選択すると上書きされます</div>
+                            </div>
+                        </div>
+
+                        <!-- 既存ファイル 2 -->
+                        <div class="row align-items-center file-row border-bottom pb-3 mb-3 px-2">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">現在のファイル</span>
+                                <a href="#" class="text-decoration-none d-block text-truncate">
+                                    <i class="bi bi-file-earmark-excel text-success"></i> data_mapping.xlsx
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">補足</span>
+                                <input type="text" class="form-control" name="ExistingFiles[1].Description" value="データマッピング定義">
+                            </div>
+                            <div class="col-md-4">
+                                <span class="d-md-none fw-bold text-muted small d-block mb-1">上書き用ファイル</span>
+                                <input class="form-control" type="file" name="ExistingFiles[1].ReplacementFile">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新規追加ファイルセクション -->
+                <div class="card shadow-sm mb-4 border-primary">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom-0">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-cloud-arrow-up me-2"></i>新規追加ファイル</h5>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addFileBtn">
+                            <i class="bi bi-plus-lg"></i> ファイルを追加
+                        </button>
+                    </div>
+                    <div class="card-body border-top">
+                        <!-- ヘッダー行 (PC表示のみ・ファイルが存在する時だけ表示) -->
+                        <div class="row fw-bold text-muted border-bottom pb-2 mb-3 px-2 d-none" id="newFilesHeader">
+                            <div class="col-md-4">ファイル</div>
+                            <div class="col-md-6">補足</div>
+                            <div class="col-md-2 text-md-center">操作</div>
+                        </div>
+
+                        <!-- 動的追加コンテナ -->
+                        <div id="newFilesContainer">
+                            <!-- ここにJavaScriptで動的に行が追加されます -->
+                        </div>
+
+                        <!-- ファイルが0件の時のプレースホルダー -->
+                        <div id="emptyMessage" class="text-muted text-center py-4">
+                            <i class="bi bi-file-earmark-plus display-6 text-secondary mb-2 opacity-50 d-block"></i>
+                            追加するファイルはありません。<br>右上の「ファイルを追加」ボタンから追加してください。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- アクションボタン -->
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-secondary">キャンセル</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check2"></i> 保存する
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 動的行追加・削除ロジック -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const addFileBtn = document.getElementById('addFileBtn');
+    const newFilesContainer = document.getElementById('newFilesContainer');
+    const emptyMessage = document.getElementById('emptyMessage');
+    const newFilesHeader = document.getElementById('newFilesHeader');
+    let fileIndex = 0; // バックエンドの配列バインディング用インデックス
+
+    // ヘッダーとプレースホルダーの表示切り替え
+    function toggleVisibility() {
+        const hasFiles = newFilesContainer.children.length > 0;
+        
+        if (hasFiles) {
+            emptyMessage.style.display = 'none';
+            // PC表示時のみ flex になるようにクラスを調整
+            newFilesHeader.classList.remove('d-none');
+            newFilesHeader.classList.add('d-md-flex', 'd-none');
+        } else {
+            emptyMessage.style.display = 'block';
+            newFilesHeader.classList.remove('d-md-flex');
+            newFilesHeader.classList.add('d-none');
+        }
+    }
+
+    // ファイル追加ボタンのクリックイベント
+    addFileBtn.addEventListener('click', function () {
+        // 新しい行（Grid）を作成
+        const row = document.createElement('div');
+        row.className = 'row align-items-center file-row border-bottom pb-3 mb-3 px-2';
+        row.innerHTML = `
+            <div class="col-md-4 mb-3 mb-md-0">
+                <span class="d-md-none fw-bold text-muted small d-block mb-1">ファイル</span>
+                <input class="form-control" type="file" name="NewFiles[${fileIndex}].File" required>
+            </div>
+            <div class="col-md-6 mb-3 mb-md-0">
+                <span class="d-md-none fw-bold text-muted small d-block mb-1">補足</span>
+                <input type="text" class="form-control" name="NewFiles[${fileIndex}].Description" placeholder="ファイルの補足を入力">
+            </div>
+            <div class="col-md-2 text-md-center">
+                <button type="button" class="btn btn-outline-danger btn-sm remove-file-btn w-100" title="削除">
+                    <i class="bi bi-trash3"></i> <span class="d-md-none ms-1">削除</span>
+                </button>
+            </div>
+        `;
+        
+        // コンテナに追加
+        newFilesContainer.appendChild(row);
+        fileIndex++;
+        
+        // 表示更新
+        toggleVisibility();
+    });
+
+    // 削除ボタンのクリックイベント（イベントデリゲーション）
+    newFilesContainer.addEventListener('click', function (e) {
+        const removeBtn = e.target.closest('.remove-file-btn');
+        if (removeBtn) {
+            // 対象の行(row)を削除
+            const row = removeBtn.closest('.file-row');
+            row.remove();
+            
+            // 表示更新
+            toggleVisibility();
+        }
+    });
+});
+</script>
+
+</body>
+</html>
